@@ -21,7 +21,7 @@ public class Tweet {
         return new Tweet(autor, tweetOriginal);
     }
 
-    boolean esAutor(User user) {
+    public boolean esAutor(User user) {
         return this.autor == user;
     }
 
