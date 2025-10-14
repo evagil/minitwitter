@@ -11,6 +11,7 @@ public class User {
 
     private final String userName;
     private final List<Tweet> tweets;
+    private int id;
 
     public User(String userName) {
         assertUserNameLongitud(userName);
@@ -34,6 +35,15 @@ public class User {
 
     void eliminarTweets() {
         tweets.clear();
+    }
+
+    // Getter y setter para persistencia
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     private void assertUserNameLongitud(String userName) {

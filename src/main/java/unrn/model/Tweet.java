@@ -4,6 +4,7 @@ public class Tweet {
     private final User autor;
     private final String texto;
     private final Tweet tweetOriginal;
+    private int id;
 
     public Tweet(User autor, String texto) {
         this.autor = autor;
@@ -31,5 +32,22 @@ public class Tweet {
 
     public Tweet tweetDeOrigen() {
         return tweetOriginal;
+    }
+
+    // Getters para persistencia
+    public int getId() {
+        return id;
+    }
+
+    public int getAutorId() {
+        return autor != null ? autor.getId() : 0;
+    }
+
+    public String getTexto() {
+        return texto;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

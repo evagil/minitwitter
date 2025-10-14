@@ -12,15 +12,18 @@ public class TweetController {
         this.tweetService = tweetService;
     }
 
-    public Tweet crearTweet(User user, String texto) {
+    public Tweet crearTweet(String userName, String texto) {
+        User user = new User(userName);
         return tweetService.crearTweet(user, texto);
     }
 
-    public Tweet hacerRetweet(User user, Tweet tweetOriginal) {
+    public Tweet hacerRetweet(String userName, Tweet tweetOriginal) {
+        User user = new User(userName);
         return tweetService.hacerRetweet(user, tweetOriginal);
     }
 
-    public List<Tweet> obtenerTweetsDeUsuario(User user) {
+    public List<Tweet> obtenerTweetsDeUsuario(String userName) {
+        User user = new User(userName);
         return tweetService.obtenerTweetsDeUsuario(user);
     }
 }
