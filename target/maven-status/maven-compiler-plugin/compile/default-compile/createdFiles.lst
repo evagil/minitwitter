@@ -1,0 +1,10 @@
+unrn\repository\ConexionMySQL.class
+unrn\services\TweetService.class
+unrn\services\UserService.class
+unrn\repository\TweetRepository.class
+unrn\controller\UserController.class
+unrn\repository\UserRepository.class
+unrn\main\Main.class
+unrn\model\User.class
+unrn\controller\TweetController.class
+unrn\model\Tweet.class

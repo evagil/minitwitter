@@ -2,16 +2,24 @@ package unrn.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     static final String ERROR_USERNAME_DUPLICADO = "El nombre de usuario ya existe";
     static final String ERROR_USERNAME_LONGITUD = "El nombre de usuario debe tener entre 5 y 25 caracteres";
     static final String ERROR_TWEET_LONGITUD = "El tweet debe tener entre 1 y 280 caracteres";
     static final String ERROR_RETWEET_PROPIO = "No puedes hacer retweet de tu propio tweet";
 
-    private final String userName;
-    private final List<Tweet> tweets;
+    private String userName;
+    private List<Tweet> tweets;
     private int id;
+    private String email;
+    private String password;
 
     public User(String userName) {
         assertUserNameLongitud(userName);
@@ -37,14 +45,6 @@ public class User {
         tweets.clear();
     }
 
-    // Getter y setter para persistencia
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     private void assertUserNameLongitud(String userName) {
         if (userName == null || userName.length() < 5 || userName.length() > 25) {
