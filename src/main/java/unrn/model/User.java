@@ -1,11 +1,14 @@
 package unrn.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+@Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,10 +18,21 @@ public class User {
     static final String ERROR_TWEET_LONGITUD = "El tweet debe tener entre 1 y 280 caracteres";
     static final String ERROR_RETWEET_PROPIO = "No puedes hacer retweet de tu propio tweet";
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "username", nullable = false, unique = true, length = 25)
     private String userName;
-    private List<Tweet> tweets;
-    private int id;
+
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tweet> tweets = new ArrayList<>();
+    
+    // Campos transitorios (no se persisten en BD)
+    @Transient
     private String email;
+    
+    @Transient
     private String password;
 
     public User(String userName) {
@@ -41,10 +55,19 @@ public class User {
         return retweet;
     }
 
+    public Tweet hacerRetweetConComentario(Tweet tweetOriginal, String comentario) {
+        assertNoRetweetPropio(tweetOriginal);
+        if (comentario != null && !comentario.trim().isEmpty()) {
+            assertTweetLongitud(comentario);
+        }
+        Tweet retweet = Tweet.retweetConComentario(this, tweetOriginal, comentario);
+        tweets.add(retweet);
+        return retweet;
+    }
+
     void eliminarTweets() {
         tweets.clear();
     }
-
 
     private void assertUserNameLongitud(String userName) {
         if (userName == null || userName.length() < 5 || userName.length() > 25) {

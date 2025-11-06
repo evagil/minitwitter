@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/minitwitter
+    username: minitwitter
+    password: minitwitter
+    driver-class-name: org.postgresql.Driver
+  application:
+    name: minitwitter
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8080
+
