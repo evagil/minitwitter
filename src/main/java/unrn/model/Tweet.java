@@ -4,6 +4,8 @@ import javax.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "tweets")
@@ -11,7 +13,7 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tweet {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,9 +29,9 @@ public class Tweet {
     @JoinColumn(name = "tweet_original_id")
     private Tweet tweetOriginal;
 
-    @Column(name = "created_at", updatable = false, insertable = false)
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date createdAt;
+    private Date createdAt;
 
     public Tweet(User autor, String texto) {
         this.autor = autor;
@@ -37,22 +39,15 @@ public class Tweet {
         this.tweetOriginal = null;
     }
 
-    private Tweet(User autor, Tweet tweetOriginal) {
-        this.autor = autor;
-        this.texto = tweetOriginal.texto;
-        this.tweetOriginal = tweetOriginal;
-    }
-
-    // Constructor para retweet con comentario
     private Tweet(User autor, Tweet tweetOriginal, String comentario) {
         this.autor = autor;
-        this.texto = comentario != null && !comentario.trim().isEmpty() 
-            ? comentario 
-            : tweetOriginal.texto;
+        this.texto = (comentario != null && !comentario.trim().isEmpty())
+                ? comentario
+                : tweetOriginal.texto;
         this.tweetOriginal = tweetOriginal;
     }
 
-    // Constructor para reconstruir desde BD
+    // Para reconstrucción desde BD
     public Tweet(int id, User autor, String texto, Tweet tweetOriginal) {
         this.id = id;
         this.autor = autor;
@@ -60,16 +55,22 @@ public class Tweet {
         this.tweetOriginal = tweetOriginal;
     }
 
-    public static Tweet retweet(User autor, Tweet tweetOriginal) {
-        return new Tweet(autor, tweetOriginal);
-    }
-
-    public static Tweet retweetConComentario(User autor, Tweet tweetOriginal, String comentario) {
+    public static Tweet retweet(User autor, Tweet tweetOriginal, String comentario) {
+        if (tweetOriginal == null) {
+            throw new IllegalArgumentException("El tweet original no puede ser nulo");
+        }
         return new Tweet(autor, tweetOriginal, comentario);
     }
 
     public boolean esAutor(User user) {
-        return this.autor != null && this.autor.getId().equals(user.getId());
+        if (this.autor == null || user == null)
+            return false;
+
+        // Caso entidades no persistidas aún
+        if (this.autor.getId() == null || user.getId() == null)
+            return this.autor == user;
+
+        return this.autor.getId().equals(user.getId());
     }
 
     public boolean esRetweet() {
@@ -79,8 +80,5 @@ public class Tweet {
     public Tweet tweetDeOrigen() {
         return tweetOriginal;
     }
-
-    public int getAutorId() {
-        return autor != null ? autor.getId() : 0;
-    }
 }
+

@@ -1,18 +1,20 @@
 package unrn.services;
 
+import unrn.dto.RetweetDetailsDto;
 import unrn.model.Tweet;
 import unrn.model.User;
 import unrn.repository.TweetRepository;
 import unrn.repository.UserRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TweetService {
+
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
 
@@ -21,44 +23,24 @@ public class TweetService {
         this.userRepository = userRepository;
     }
 
-    public Tweet crearTweet(User user, String texto) {
-        // Si el usuario no existe en la base, lo guarda
-        if (user.getId() == null || user.getId() == 0) {
-            user = userRepository.save(user);
-        } else {
-            // Asegurar que el usuario está actualizado
-            user = userRepository.findById(user.getId())
+    private User ensureUserExists(User user) {
+        return userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        }
+    }
+
+    public Tweet crearTweet(User user, String texto) {
+        user = ensureUserExists(user);
         Tweet tweet = user.crearTweet(texto);
         return tweetRepository.save(tweet);
     }
 
-    public Tweet hacerRetweet(User user, Tweet tweetOriginal) {
-        if (user.getId() == null || user.getId() == 0) {
-            user = userRepository.save(user);
-        } else {
-            user = userRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        }
-        // Asegurar que el tweet original existe
-        tweetOriginal = tweetRepository.findById(tweetOriginal.getId())
-            .orElseThrow(() -> new RuntimeException("Tweet original no encontrado"));
-        Tweet retweet = user.hacerRetweet(tweetOriginal);
-        return tweetRepository.save(retweet);
-    }
+    public Tweet hacerRetweet(User user, Tweet tweetOriginal, String comentario) {
+        user = ensureUserExists(user);
 
-    public Tweet hacerRetweetConComentario(User user, Tweet tweetOriginal, String comentario) {
-        if (user.getId() == null || user.getId() == 0) {
-            user = userRepository.save(user);
-        } else {
-            user = userRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        }
-        // Asegurar que el tweet original existe
         tweetOriginal = tweetRepository.findById(tweetOriginal.getId())
-            .orElseThrow(() -> new RuntimeException("Tweet original no encontrado"));
-        Tweet retweet = user.hacerRetweetConComentario(tweetOriginal, comentario);
+                .orElseThrow(() -> new RuntimeException("Tweet original no encontrado"));
+
+        Tweet retweet = user.hacerRetweet(tweetOriginal, comentario);
         return tweetRepository.save(retweet);
     }
 
@@ -71,8 +53,9 @@ public class TweetService {
     }
 
     public List<Tweet> obtenerTodosLosTweets(int offset, int limit) {
-        Pageable pageable = PageRequest.of(offset / limit, limit);
-        Page<Tweet> page = tweetRepository.findTweetsOriginales(pageable);
+        Page<Tweet> page = tweetRepository.findTweetsOriginales(
+                PageRequest.of(offset / limit, limit)
+        );
         return page.getContent();
     }
 
@@ -81,12 +64,37 @@ public class TweetService {
     }
 
     public List<Tweet> obtenerTweetsDeUsuarioConPaginacion(User user, int offset, int limit) {
-        List<Tweet> todos = tweetRepository.findByAutorOrderByCreatedAtDesc(user);
-        int inicio = Math.min(offset, todos.size());
-        int fin = Math.min(offset + limit, todos.size());
-        if (inicio >= todos.size()) {
-            return List.of();
-        }
-        return todos.subList(inicio, fin);
+        Page<Tweet> page = tweetRepository.findByAutor(
+                user,
+                PageRequest.of(offset / limit, limit)
+        );
+        return page.getContent();
+    }
+
+    public List<RetweetDetailsDto> listarRetweets(int offset, int limit) {
+        Page<Tweet> page = tweetRepository.findRetweets(PageRequest.of(offset / limit, limit));
+
+        return page.stream()
+                .map(retweet -> {
+                    RetweetDetailsDto dto = new RetweetDetailsDto();
+                    dto.setRetweetId(retweet.getId());
+
+                    if (retweet.getAutor() != null) {
+                        dto.setRetweeterId(retweet.getAutor().getId());
+                        dto.setRetweeterUserName(retweet.getAutor().getUserName());
+                    }
+
+                    if (retweet.getTweetOriginal() != null) {
+                        dto.setOriginalTweetId(retweet.getTweetOriginal().getId());
+                        if (retweet.getTweetOriginal().getAutor() != null) {
+                            dto.setOriginalAuthorId(retweet.getTweetOriginal().getAutor().getId());
+                            dto.setOriginalAuthorUserName(retweet.getTweetOriginal().getAutor().getUserName());
+                        }
+                    }
+
+                    dto.setComentario(retweet.getTexto());
+                    return dto;
+                })
+                .toList();
     }
 }

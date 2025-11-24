@@ -2,13 +2,15 @@ package unrn.dto;
 
 public class CreateRetweetRequest {
     private int userId;
-    private String comentario; // Opcional: comentario del retweet
+    private int tweetId;
+    private String comentario;
 
     public CreateRetweetRequest() {
     }
 
-    public CreateRetweetRequest(int userId, String comentario) {
+    public CreateRetweetRequest(int userId, int tweetId, String comentario) {
         this.userId = userId;
+        this.tweetId = tweetId;
         this.comentario = comentario;
     }
 
@@ -18,6 +20,14 @@ public class CreateRetweetRequest {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public int getTweetId() {
+        return tweetId;
+    }
+
+    public void setTweetId(int tweetId) {
+        this.tweetId = tweetId;
     }
 
     public String getComentario() {

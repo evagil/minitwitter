@@ -1,6 +1,26 @@
+version: "3.9"
+
 services:
+  minitwitter-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: minitwitter-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/minitwitter
+      SPRING_DATASOURCE_USERNAME: minitwitter
+      SPRING_DATASOURCE_PASSWORD: minitwitter
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_SHOW_SQL: "true"
+    depends_on:
+      - postgres
+
   postgres:
-    image: postgres:16
+    image: postgres:13-alpine
+
     container_name: minitwitter-postgres
     environment:
       POSTGRES_USER: minitwitter
@@ -9,7 +29,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - minitwitter-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U minitwitter"]
       interval: 5s
@@ -28,7 +48,7 @@ services:
       - postgres
 
 volumes:
-  pgdata:
-    driver: local
+  minitwitter-data:
+
 
 

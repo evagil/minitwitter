@@ -13,10 +13,13 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    static final String ERROR_USERNAME_DUPLICADO = "El nombre de usuario ya existe";
-    static final String ERROR_USERNAME_LONGITUD = "El nombre de usuario debe tener entre 5 y 25 caracteres";
-    static final String ERROR_TWEET_LONGITUD = "El tweet debe tener entre 1 y 280 caracteres";
-    static final String ERROR_RETWEET_PROPIO = "No puedes hacer retweet de tu propio tweet";
+
+    static final String ERROR_USERNAME_LONGITUD =
+            "El nombre de usuario debe tener entre 5 y 25 caracteres";
+    static final String ERROR_TWEET_LONGITUD =
+            "El tweet debe tener entre 1 y 280 caracteres";
+    static final String ERROR_RETWEET_PROPIO =
+            "No puedes hacer retweet de tu propio tweet";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,18 +30,17 @@ public class User {
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tweet> tweets = new ArrayList<>();
-    
-    // Campos transitorios (no se persisten en BD)
+
+    // Campos no persistentes
     @Transient
     private String email;
-    
+
     @Transient
     private String password;
 
     public User(String userName) {
         assertUserNameLongitud(userName);
         this.userName = userName;
-        this.tweets = new ArrayList<>();
     }
 
     public Tweet crearTweet(String texto) {
@@ -49,18 +51,15 @@ public class User {
     }
 
     public Tweet hacerRetweet(Tweet tweetOriginal) {
-        assertNoRetweetPropio(tweetOriginal);
-        Tweet retweet = Tweet.retweet(this, tweetOriginal);
-        tweets.add(retweet);
-        return retweet;
+        return hacerRetweet(tweetOriginal, null);
     }
 
-    public Tweet hacerRetweetConComentario(Tweet tweetOriginal, String comentario) {
+    public Tweet hacerRetweet(Tweet tweetOriginal, String comentario) {
         assertNoRetweetPropio(tweetOriginal);
         if (comentario != null && !comentario.trim().isEmpty()) {
             assertTweetLongitud(comentario);
         }
-        Tweet retweet = Tweet.retweetConComentario(this, tweetOriginal, comentario);
+        Tweet retweet = Tweet.retweet(this, tweetOriginal, comentario);
         tweets.add(retweet);
         return retweet;
     }
