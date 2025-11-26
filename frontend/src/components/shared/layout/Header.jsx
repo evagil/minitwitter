@@ -28,8 +28,8 @@ export default function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-10 bg-base-100 shadow-sm">
-            <div className="flex items-center justify-between p-4">
+        <header className="sticky top-0 z-10 bg-base-100/95 border-b border-base-300 shadow-md backdrop-blur">
+            <div className="flex items-center justify-between px-6 py-3">
                 {/* Logo y título */}
                 <div className="flex items-center gap-4">
                     <Link to="/" className="flex items-center gap-2">
@@ -38,24 +38,24 @@ export default function Header() {
                 </div>
 
                 {/* Navegación */}
-                <nav className="flex items-center gap-4">
+                <nav className="flex items-center gap-3">
                     <button
                         onClick={handleHome}
-                        className="btn btn-ghost btn-sm flex items-center gap-2"
+                        className="btn btn-sm btn-outline btn-primary flex items-center gap-2"
                     >
                         <FontAwesomeIcon icon={faHome} />
                         {MESSAGES.UI.HOME}
                     </button>
                     <Link
                         to={CONFIG.ROUTES.USUARIOS}
-                        className="btn btn-ghost btn-sm flex items-center gap-2"
+                        className="btn btn-sm btn-outline btn-primary flex items-center gap-2"
                     >
                         <FontAwesomeIcon icon={faUsers} />
                         {MESSAGES.UI.USUARIOS}
                     </Link>
                     <button
                         onClick={handleCrearTweet}
-                        className="btn btn-ghost btn-sm flex items-center gap-2"
+                        className="btn btn-sm btn-primary flex items-center gap-2"
                     >
                         {MESSAGES.UI.CREAR_TWEET}
                     </button>

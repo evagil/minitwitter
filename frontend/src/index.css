@@ -19,9 +19,9 @@
     --color-accent-focus: hsl(220, 4%, 11%);
     --color-accent-content: hsl(0, 0%, 100%);
 
-    /* Neutral / Base (fondo claro): #FBFCF7 */
-    --color-neutral: hsl(70, 44%, 98%);
-    --color-neutral-focus: hsl(70, 44%, 96%);
+    /* Neutral / Base (fondo beige un poco más intenso) */
+    --color-neutral: hsl(37, 60%, 92%);
+    --color-neutral-focus: hsl(37, 60%, 90%);
     --color-neutral-content: hsl(220, 4%, 13%);
 
     /* Base 100 (fondo principal) */
@@ -56,8 +56,8 @@
     --color-accent-focus: hsl(220, 4%, 11%);
     --color-accent-content: hsl(0, 0%, 100%);
 
-    --color-neutral: hsl(70, 44%, 98%);
-    --color-neutral-focus: hsl(70, 44%, 96%);
+    --color-neutral: hsl(37, 60%, 92%);
+    --color-neutral-focus: hsl(37, 60%, 90%);
     --color-neutral-content: hsl(220, 4%, 13%);
 
     --color-base-100: var(--color-neutral);

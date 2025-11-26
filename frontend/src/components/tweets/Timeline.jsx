@@ -108,7 +108,7 @@ const Timeline = ({ currentUserId }) => {
                 <div className="flex justify-center items-center gap-4 mt-6">
                     <button
                         onClick={handlePrevPage}
-                        className="btn btn-primary"
+                        className={`btn btn-primary ${(!hasPrev || loading) ? 'btn-disabled opacity-50 cursor-not-allowed' : ''}`}
                         disabled={!hasPrev || loading}
                     >
                         {MESSAGES.UI.ANTERIOR}
@@ -118,7 +118,7 @@ const Timeline = ({ currentUserId }) => {
                     </span>
                     <button
                         onClick={handleNextPage}
-                        className="btn btn-primary"
+                        className={`btn btn-primary ${(!hasNext || loading) ? 'btn-disabled opacity-50 cursor-not-allowed' : ''}`}
                         disabled={!hasNext || loading}
                     >
                         {MESSAGES.UI.SIGUIENTE}

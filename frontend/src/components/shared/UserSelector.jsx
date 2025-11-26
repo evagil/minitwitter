@@ -63,7 +63,7 @@ const UserSelector = () => {
             ) : (
                 <button
                     onClick={() => setShowSelector(true)}
-                    className="btn btn-primary btn-lg shadow-2xl"
+                    className="btn btn-primary btn-lg shadow-2xl border-2 border-secondary/40 hover:border-secondary w-56"
                 >
                     <FontAwesomeIcon icon={faUser} className="mr-2" />
                     Seleccionar Usuario
