@@ -39,11 +39,10 @@ public class Tweet {
         this.tweetOriginal = null;
     }
 
-    private Tweet(User autor, Tweet tweetOriginal, String comentario) {
+    private Tweet(User autor, Tweet tweetOriginal) {
         this.autor = autor;
-        this.texto = (comentario != null && !comentario.trim().isEmpty())
-                ? comentario
-                : tweetOriginal.texto;
+        // Un retweet no tiene texto adicional, usa el texto del tweet original
+        this.texto = tweetOriginal.texto;
         this.tweetOriginal = tweetOriginal;
     }
 
@@ -55,11 +54,11 @@ public class Tweet {
         this.tweetOriginal = tweetOriginal;
     }
 
-    public static Tweet retweet(User autor, Tweet tweetOriginal, String comentario) {
+    public static Tweet retweet(User autor, Tweet tweetOriginal) {
         if (tweetOriginal == null) {
             throw new IllegalArgumentException("El tweet original no puede ser nulo");
         }
-        return new Tweet(autor, tweetOriginal, comentario);
+        return new Tweet(autor, tweetOriginal);
     }
 
     public boolean esAutor(User user) {

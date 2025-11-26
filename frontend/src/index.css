@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables globales */
+:root {
+    /* Primary: #C58B82 */
+    --color-primary: hsl(9, 35%, 65%);
+    --color-primary-focus: hsl(9, 35%, 55%);
+    --color-primary-content: hsl(0, 0%, 100%);
+
+    /* Secondary: #471F16 */
+    --color-secondary: hsl(13, 57%, 19%);
+    --color-secondary-focus: hsl(13, 57%, 16%);
+    --color-secondary-content: hsl(0, 0%, 100%);
+
+    /* Accent: #202124 */
+    --color-accent: hsl(220, 4%, 13%);
+    --color-accent-focus: hsl(220, 4%, 11%);
+    --color-accent-content: hsl(0, 0%, 100%);
+
+    /* Neutral / Base (fondo claro): #FBFCF7 */
+    --color-neutral: hsl(70, 44%, 98%);
+    --color-neutral-focus: hsl(70, 44%, 96%);
+    --color-neutral-content: hsl(220, 4%, 13%);
+
+    /* Base 100 (fondo principal) */
+    --color-base-100: var(--color-neutral);
+    --color-base-content: var(--color-neutral-content);
+
+    /* Estados estándar */
+    --color-info: hsl(199, 92%, 60%);
+    --color-info-content: hsl(0, 0%, 100%);
+    --color-success: hsl(158, 64%, 46%);
+    --color-success-content: hsl(0, 0%, 100%);
+    --color-warning: hsl(45, 96%, 54%);
+    --color-warning-content: hsl(0, 0%, 10%);
+    --color-error: hsl(0, 91%, 63%);
+    --color-error-content: hsl(0, 0%, 100%);
+
+    /* Border */
+    --color-border: hsl(13, 57%, 85%);
+    --radius: 0.5rem;
+}
+
+[data-theme="mytheme"] {
+    --color-primary: hsl(9, 35%, 65%);
+    --color-primary-focus: hsl(9, 35%, 55%);
+    --color-primary-content: hsl(0, 0%, 100%);
+
+    --color-secondary: hsl(13, 57%, 19%);
+    --color-secondary-focus: hsl(13, 57%, 16%);
+    --color-secondary-content: hsl(0, 0%, 100%);
+
+    --color-accent: hsl(220, 4%, 13%);
+    --color-accent-focus: hsl(220, 4%, 11%);
+    --color-accent-content: hsl(0, 0%, 100%);
+
+    --color-neutral: hsl(70, 44%, 98%);
+    --color-neutral-focus: hsl(70, 44%, 96%);
+    --color-neutral-content: hsl(220, 4%, 13%);
+
+    --color-base-100: var(--color-neutral);
+    --color-base-content: var(--color-neutral-content);
+
+    --color-info: hsl(199, 92%, 60%);
+    --color-success: hsl(158, 64%, 46%);
+    --color-warning: hsl(45, 96%, 54%);
+    --color-error: hsl(0, 91%, 63%);
+}
+
+.card, .card-body, .join, .badge {
+    --tw-border-opacity: 1;
+    border-color: color-mix(in srgb, var(--color-border) 30%, transparent);
+}
+

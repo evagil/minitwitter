@@ -51,15 +51,8 @@ public class User {
     }
 
     public Tweet hacerRetweet(Tweet tweetOriginal) {
-        return hacerRetweet(tweetOriginal, null);
-    }
-
-    public Tweet hacerRetweet(Tweet tweetOriginal, String comentario) {
         assertNoRetweetPropio(tweetOriginal);
-        if (comentario != null && !comentario.trim().isEmpty()) {
-            assertTweetLongitud(comentario);
-        }
-        Tweet retweet = Tweet.retweet(this, tweetOriginal, comentario);
+        Tweet retweet = Tweet.retweet(this, tweetOriginal);
         tweets.add(retweet);
         return retweet;
     }

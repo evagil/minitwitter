@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/tweets")
+@RequestMapping("/tweets")
 @CrossOrigin
 public class TweetController {
 
@@ -47,7 +47,8 @@ public class TweetController {
         if (original == null) {
             return ResponseEntity.badRequest().body("Tweet no encontrado");
         }
-        Tweet rt = tweetService.hacerRetweet(user, original, request.getComentario());
+        // Un retweet no tiene texto adicional, se ignora el comentario si viene
+        Tweet rt = tweetService.hacerRetweet(user, original);
         return ResponseEntity.ok(TweetMapper.toDto(rt));
     }
 

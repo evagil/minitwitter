@@ -2,13 +2,16 @@ package unrn.controller.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import unrn.dto.UserDto;
+import unrn.mapper.UserMapper;
 import unrn.model.User;
 import unrn.services.UserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/usuarios")
 @CrossOrigin
 public class UserController {
 
@@ -22,15 +25,17 @@ public class UserController {
     public ResponseEntity<?> crearUsuario(@RequestParam String userName) {
         try {
             User u = userService.crearUsuario(userName);
-            return ResponseEntity.ok(u);
+            return ResponseEntity.ok(UserMapper.toDto(u));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping
-    public List<User> listar() {
-        return userService.listarTodos();
+    public List<UserDto> listar() {
+        return userService.listarTodos().stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -39,7 +44,7 @@ public class UserController {
         if (u == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(u);
+        return ResponseEntity.ok(UserMapper.toDto(u));
     }
 
     @DeleteMapping("/{id}")

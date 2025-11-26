@@ -34,13 +34,13 @@ public class TweetService {
         return tweetRepository.save(tweet);
     }
 
-    public Tweet hacerRetweet(User user, Tweet tweetOriginal, String comentario) {
+    public Tweet hacerRetweet(User user, Tweet tweetOriginal) {
         user = ensureUserExists(user);
 
         tweetOriginal = tweetRepository.findById(tweetOriginal.getId())
                 .orElseThrow(() -> new RuntimeException("Tweet original no encontrado"));
 
-        Tweet retweet = user.hacerRetweet(tweetOriginal, comentario);
+        Tweet retweet = user.hacerRetweet(tweetOriginal);
         return tweetRepository.save(retweet);
     }
 

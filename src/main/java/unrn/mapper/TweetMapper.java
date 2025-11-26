@@ -16,6 +16,7 @@ public class TweetMapper {
         }
         if (tweet.getTweetOriginal() != null) {
             dto.setTweetOriginalId(tweet.getTweetOriginal().getId());
+            dto.setTweetOriginalCreatedAt(tweet.getTweetOriginal().getCreatedAt());
             if (tweet.getTweetOriginal().getAutor() != null) {
                 dto.setTweetOriginalAutor(tweet.getTweetOriginal().getAutor().getUserName());
             }

@@ -15,10 +15,14 @@ public class UserService {
     }
 
     public User crearUsuario(String userName) {
-        if (userRepository.findByUserName(userName).isPresent()) {
+        String normalized = userName != null ? userName.trim() : null;
+        if (normalized == null) {
+            throw new RuntimeException("El nombre de usuario es obligatorio");
+        }
+        if (userRepository.existsByUserNameIgnoreCase(normalized)) {
             throw new RuntimeException("El nombre de usuario ya existe");
         }
-        User user = new User(userName);
+        User user = new User(normalized);
         return userRepository.save(user);
     }
 
@@ -27,7 +31,7 @@ public class UserService {
     }
 
     public User buscarPorUserName(String userName) {
-        return userRepository.findByUserName(userName).orElse(null);
+        return userRepository.findByUserNameIgnoreCase(userName).orElse(null);
     }
 
     public List<User> listarTodos() {

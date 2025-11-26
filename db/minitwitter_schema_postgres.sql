@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(25) NOT NULL UNIQUE
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS uq_users_username_ci
+    ON users ((LOWER(username)));
+
 CREATE TABLE IF NOT EXISTS tweets (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
@@ -72,10 +75,10 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION crear_usuario(nombre VARCHAR)
 RETURNS VOID AS $$
 BEGIN
-  IF EXISTS (SELECT 1 FROM users WHERE username = nombre) THEN
+  IF EXISTS (SELECT 1 FROM users WHERE LOWER(username) = LOWER(nombre)) THEN
     RAISE EXCEPTION 'El nombre de usuario ya existe';
   ELSE
-    INSERT INTO users(username) VALUES (nombre);
+    INSERT INTO users(username) VALUES (TRIM(nombre));
   END IF;
 END;
 $$ LANGUAGE plpgsql;

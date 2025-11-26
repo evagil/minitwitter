@@ -12,5 +12,6 @@ public class TweetDto {
     private String autorUserName;
     private Integer tweetOriginalId;
     private String tweetOriginalAutor;
+    private Date tweetOriginalCreatedAt;
 }
 
