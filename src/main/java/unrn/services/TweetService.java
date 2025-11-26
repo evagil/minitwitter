@@ -53,6 +53,9 @@ public class TweetService {
     }
 
     public List<Tweet> obtenerTodosLosTweets(int offset, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
         Page<Tweet> page = tweetRepository.findTweetsOriginales(
                 PageRequest.of(offset / limit, limit)
         );
@@ -64,6 +67,9 @@ public class TweetService {
     }
 
     public List<Tweet> obtenerTweetsDeUsuarioConPaginacion(User user, int offset, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
         Page<Tweet> page = tweetRepository.findByAutor(
                 user,
                 PageRequest.of(offset / limit, limit)
@@ -72,6 +78,9 @@ public class TweetService {
     }
 
     public List<RetweetDetailsDto> listarRetweets(int offset, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
         Page<Tweet> page = tweetRepository.findRetweets(PageRequest.of(offset / limit, limit));
 
         return page.stream()
