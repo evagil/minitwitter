@@ -1,4 +1,4 @@
-package unrn.controller.rest;
+package unrn.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
