@@ -14,6 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 public class Tweet {
 
+    static final String ERROR_TWEET_ORIGINAL_NULO =
+            "El tweet original no puede ser nulo";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -56,7 +59,7 @@ public class Tweet {
 
     public static Tweet retweet(User autor, Tweet tweetOriginal) {
         if (tweetOriginal == null) {
-            throw new IllegalArgumentException("El tweet original no puede ser nulo");
+            throw new IllegalArgumentException(ERROR_TWEET_ORIGINAL_NULO);
         }
         return new Tweet(autor, tweetOriginal);
     }

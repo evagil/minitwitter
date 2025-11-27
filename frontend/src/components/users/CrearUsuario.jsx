@@ -32,7 +32,12 @@ const CrearUsuario = ({ onUsuarioCreado }) => {
                 onUsuarioCreado();
             }
         } catch (err) {
-            setError(err.response?.data?.message || err.message || MESSAGES.ERROR.CREAR_USUARIO);
+            // El backend puede retornar el mensaje como string directo o como objeto con message
+            const errorMessage = err.response?.data?.message 
+                || (typeof err.response?.data === 'string' ? err.response.data : null)
+                || err.message 
+                || MESSAGES.ERROR.CREAR_USUARIO;
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }

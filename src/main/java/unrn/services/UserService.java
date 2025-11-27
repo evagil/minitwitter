@@ -8,6 +8,11 @@ import java.util.List;
 @Service
 public class UserService {
 
+    static final String ERROR_USERNAME_OBLIGATORIO =
+            "El nombre de usuario es obligatorio";
+    static final String ERROR_USERNAME_DUPLICADO =
+            "El nombre de usuario ya existe. Por favor, elige otro nombre.";
+
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -17,10 +22,10 @@ public class UserService {
     public User crearUsuario(String userName) {
         String normalized = userName != null ? userName.trim() : null;
         if (normalized == null) {
-            throw new RuntimeException("El nombre de usuario es obligatorio");
+            throw new RuntimeException(ERROR_USERNAME_OBLIGATORIO);
         }
         if (userRepository.existsByUserNameIgnoreCase(normalized)) {
-            throw new RuntimeException("El nombre de usuario ya existe");
+            throw new RuntimeException(ERROR_USERNAME_DUPLICADO);
         }
         User user = new User(normalized);
         return userRepository.save(user);

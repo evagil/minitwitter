@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    static final String ERROR_INTERNO_SERVIDOR = "Error interno del servidor: ";
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntime(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -16,6 +18,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error interno del servidor: " + e.getMessage());
+                .body(ERROR_INTERNO_SERVIDOR + e.getMessage());
     }
 }

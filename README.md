@@ -94,27 +94,74 @@ Todos los endpoints responden JSON.
 - Docker Desktop + Docker Compose
 
 ## 8. Puesta en marcha
+
+### Paso 1: Clonar el repositorio
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/evagil/minitwitter.git
 cd MiniTwitter
-
-# 2. Levantar Postgres (y pgAdmin opcional)
-docker-compose up -d postgres    # agrega pgAdmin con: docker-compose up -d
-
-# 3. Crear el esquema (una sola vez)
-psql -h localhost -U minitwitter -d minitwitter -f db/minitwitter_schema_postgres.sql
-# o usando pgAdmin / Docker (ver script en la carpeta db/)
-
-# 4. Backend (nueva terminal)
-mvn spring-boot:run
-# disponible en http://localhost:8080
-
-# 5. Frontend (otra terminal)
-cd frontend
-npm install        # solo la primera vez
-npm run dev        # http://localhost:3001
 ```
+
+### Paso 2: Levantar PostgreSQL con Docker
+**Importante**: Asegurate de tener Docker Desktop corriendo antes de continuar.
+
+```bash
+# Levantar solo PostgreSQL (recomendado para desarrollo)
+docker-compose up -d postgres
+
+# O levantar todo (PostgreSQL + pgAdmin)
+docker-compose up -d
+```
+
+Espera unos segundos a que el contenedor esté listo. Verificá con:
+```bash
+docker ps
+```
+Deberías ver el contenedor `minitwitter-postgres` corriendo.
+
+### Paso 3: Crear el esquema de la base de datos (solo la primera vez)
+
+**Opción A - Usando Docker (recomendado, no requiere psql instalado):**
+```bash
+# Ejecutar el script directamente desde el contenedor
+docker exec -i minitwitter-postgres psql -U minitwitter -d minitwitter < db/minitwitter_schema_postgres.sql
+```
+
+**Opción B - Usando psql (si lo tenés instalado):**
+```bash
+psql -h localhost -U minitwitter -d minitwitter -f db/minitwitter_schema_postgres.sql
+```
+Cuando te pida la contraseña, ingresá: `minitwitter`
+
+**Opción C - Usando pgAdmin (si levantaste todo con docker-compose):**
+1. Abrí `http://localhost:5050` en tu navegador
+2. Login con: `admin@local` / `admin`
+3. Agregá el servidor PostgreSQL (host: `postgres`, usuario: `minitwitter`, contraseña: `minitwitter`)
+4. Ejecutá el script `db/minitwitter_schema_postgres.sql` desde el editor de queries
+
+### Paso 4: Levantar el Backend
+Abrí una **nueva terminal** y ejecutá:
+```bash
+mvn spring-boot:run
+```
+El backend estará disponible en `http://localhost:8080`
+
+**Verificación**: Podés probar que funciona visitando `http://localhost:8080/swagger-ui.html` (documentación de la API)
+
+### Paso 5: Levantar el Frontend
+Abrí **otra terminal** y ejecutá:
+```bash
+cd frontend
+npm install        # Solo la primera vez (instala dependencias)
+npm run dev       # Inicia el servidor de desarrollo
+```
+El frontend estará disponible en `http://localhost:3001`
+
+### Verificación final
+1. ✅ Docker: `docker ps` muestra `minitwitter-postgres` corriendo
+2. ✅ Backend: `http://localhost:8080/swagger-ui.html` se abre correctamente
+3. ✅ Frontend: `http://localhost:3001` muestra la aplicación
+
+Si algo no funciona, revisá la sección de **Troubleshooting** más abajo.
 
 ## 9. Uso básico
 1. Asegurate de que PostgreSQL y el backend estén corriendo.
@@ -142,12 +189,49 @@ npm run build         # build de producción (dist/)
 npm run preview       # sirve el build para verificación
 ```
 
-## 11. Notas finales
+## 11. Troubleshooting (Solución de problemas)
+
+### Error: "Cannot connect to Docker daemon"
+- **Solución**: Asegurate de que Docker Desktop esté corriendo. En Windows/Mac, abrí Docker Desktop y esperá a que esté completamente iniciado.
+
+### Error: "Port 5432 is already in use"
+- **Solución**: Alguien más está usando PostgreSQL en tu máquina. Podés:
+  - Detener el servicio: `docker-compose down`
+  - O cambiar el puerto en `docker-compose.yml` (línea 30) y actualizar `application.properties`
+
+### Error al ejecutar el script SQL: "permission denied" o "file not found"
+- **Solución**: Verificá que el archivo `db/minitwitter_schema_postgres.sql` existe y que el contenedor está corriendo:
+  ```bash
+  docker ps
+  docker exec -it minitwitter-postgres psql -U minitwitter -d minitwitter
+  ```
+  Si entrás a psql, ejecutá manualmente el contenido del script.
+
+### Backend no se conecta a la base de datos
+- **Verificá**:
+  1. PostgreSQL está corriendo: `docker ps`
+  2. Las credenciales en `src/main/resources/application.properties` coinciden con `docker-compose.yml`
+  3. El esquema fue creado correctamente (Paso 3)
+
+### Frontend no se conecta al backend
+- **Verificá**:
+  1. El backend está corriendo en `http://localhost:8080`
+  2. No hay errores de CORS (el `CorsConfig.java` debería estar configurado)
+  3. Abrí la consola del navegador (F12) para ver errores específicos
+
+### "npm: command not found"
+- **Solución**: Instalá Node.js desde [nodejs.org](https://nodejs.org/). Verificá con `node --version` y `npm --version`.
+
+### "mvn: command not found"
+- **Solución**: Instalá Maven o usá el wrapper incluido: `./mvnw spring-boot:run` (Linux/Mac) o `.\mvnw.cmd spring-boot:run` (Windows)
+
+## 12. Notas finales
 - Si cambias puertos o credenciales del contenedor, actualiza `src/main/resources/application.properties`.
 - Para detener los servicios:
   - Backend: `Ctrl+C` en la terminal.
   - Frontend: `Ctrl+C` en la terminal.
-  - Docker: `docker-compose down`.
+  - Docker: `docker-compose down` (detiene y elimina contenedores) o `docker-compose stop` (solo detiene).
 - El schema de referencia está optimizado para PostgreSQL; no hay scripts activos para otros motores.
+- Para limpiar completamente (incluyendo volúmenes de datos): `docker-compose down -v`
 
 ¡Listo! Con estos pasos podés levantar, operar y extender MiniTwitter tanto en backend como en frontend.

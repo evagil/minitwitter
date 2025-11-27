@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class UserController {
 
+    static final String MENSAJE_USUARIO_ELIMINADO = "Usuario eliminado";
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -54,7 +56,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         userService.eliminarUsuario(id);
-        return ResponseEntity.ok("Usuario eliminado");
+        return ResponseEntity.ok(MENSAJE_USUARIO_ELIMINADO);
     }
 }
 

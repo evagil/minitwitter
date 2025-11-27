@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class TweetController {
 
+    static final String ERROR_USUARIO_NO_ENCONTRADO = "Usuario no encontrado";
+    static final String ERROR_TWEET_NO_ENCONTRADO = "Tweet no encontrado";
+
     private final TweetService tweetService;
     private final UserService userService;
 
@@ -41,11 +44,11 @@ public class TweetController {
     public ResponseEntity<?> retweet(@RequestBody CreateRetweetRequest request) {
         User user = userService.buscarPorId(request.getUserId());
         if (user == null) {
-            return ResponseEntity.badRequest().body("Usuario no encontrado");
+            return ResponseEntity.badRequest().body(ERROR_USUARIO_NO_ENCONTRADO);
         }
         Tweet original = tweetService.buscarTweetPorId(request.getTweetId());
         if (original == null) {
-            return ResponseEntity.badRequest().body("Tweet no encontrado");
+            return ResponseEntity.badRequest().body(ERROR_TWEET_NO_ENCONTRADO);
         }
         // Un retweet no tiene texto adicional, se ignora el comentario si viene
         Tweet rt = tweetService.hacerRetweet(user, original);
