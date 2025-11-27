@@ -23,7 +23,6 @@ class HomeControllerIntegrationTest {
     @Test
     @DisplayName("GET / retorna 200 con información de la API")
     void home_retorna200ConInformacion() throws Exception {
-        // Ejercitación y Verificación: comprobar resultado esperado
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

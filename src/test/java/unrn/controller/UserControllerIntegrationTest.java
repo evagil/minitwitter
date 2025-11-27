@@ -56,10 +56,9 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("POST /usuarios con nombre válido retorna 200 y usuario creado")
     void crearUsuario_nombreValido_retorna200YUsuario() throws Exception {
-        // Setup: preparar el escenario
+        
         String nombreUsuario = "nuevoUsuario";
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+       
         mockMvc.perform(post("/usuarios")
                         .param("userName", nombreUsuario)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -72,11 +71,10 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("POST /usuarios con nombre duplicado retorna 400")
     void crearUsuario_nombreDuplicado_retorna400() throws Exception {
-        // Setup: preparar el escenario
+       
         String nombreUsuario = "usuarioExistente";
         userService.crearUsuario(nombreUsuario);
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+      
         mockMvc.perform(post("/usuarios")
                         .param("userName", nombreUsuario)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -87,7 +85,7 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("POST /usuarios con nombre null retorna 400")
     void crearUsuario_nombreNull_retorna400() throws Exception {
-        // Ejercitación y Verificación: comprobar resultado esperado
+       
         mockMvc.perform(post("/usuarios")
                         .param("userName", "")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -97,12 +95,11 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("GET /usuarios retorna lista de usuarios")
     void listarUsuarios_retornaLista() throws Exception {
-        // Setup: preparar el escenario
+        
         userService.crearUsuario("usuarioUno");
         userService.crearUsuario("usuarioDos");
         userService.crearUsuario("usuarioTres");
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+       
         mockMvc.perform(get("/usuarios"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -115,7 +112,7 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("GET /usuarios sin usuarios retorna lista vacía")
     void listarUsuarios_sinUsuarios_retornaListaVacia() throws Exception {
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/usuarios"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -126,11 +123,10 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("GET /usuarios/{id} con ID existente retorna 200 y usuario")
     void buscarUsuario_idExistente_retorna200YUsuario() throws Exception {
-        // Setup: preparar el escenario
+        
         User usuario = userService.crearUsuario("usuarioParaBuscar");
         int id = usuario.getId();
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/usuarios/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -141,10 +137,9 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("GET /usuarios/{id} con ID inexistente retorna 404")
     void buscarUsuario_idInexistente_retorna404() throws Exception {
-        // Setup: preparar el escenario
+       
         int idInexistente = 999;
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/usuarios/{id}", idInexistente))
                 .andExpect(status().isNotFound());
     }
@@ -152,16 +147,14 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("DELETE /usuarios/{id} con ID existente retorna 200")
     void eliminarUsuario_idExistente_retorna200() throws Exception {
-        // Setup: preparar el escenario
+        
         User usuario = userService.crearUsuario("usuarioParaEliminar");
         int id = usuario.getId();
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(delete("/usuarios/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Usuario eliminado"));
-
-        // Verificar que el usuario fue eliminado
+       
         User usuarioEliminado = userService.buscarPorId(id);
         assertNull(usuarioEliminado, "El usuario debe haber sido eliminado");
     }
@@ -169,10 +162,9 @@ class UserControllerIntegrationTest {
     @Test
     @DisplayName("DELETE /usuarios/{id} con ID inexistente retorna 404")
     void eliminarUsuario_idInexistente_retorna404() throws Exception {
-        // Setup: preparar el escenario
+       
         int idInexistente = 999;
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(delete("/usuarios/{id}", idInexistente))
                 .andExpect(status().isNotFound());
     }

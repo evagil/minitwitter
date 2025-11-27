@@ -31,13 +31,6 @@ public class User {
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tweet> tweets = new ArrayList<>();
 
-    // Campos no persistentes
-    @Transient
-    private String email;
-
-    @Transient
-    private String password;
-
     public User(String userName) {
         assertUserNameLongitud(userName);
         this.userName = userName;

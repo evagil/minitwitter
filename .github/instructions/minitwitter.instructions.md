@@ -1,13 +1,13 @@
 # Descripción general
 
-- Este es un proyecto escrito en **Java 8** utilizando el paradigma orientado a objetos.
+- Este es un proyecto escrito en **Java 17** utilizando el paradigma orientado a objetos.
 - Se construye una versión simplificada de Twitter con arquitectura monolítica de backend.
 - El backend y el frontend son aplicaciones separadas que se comunican vía servicios web.
 - El modelo de dominio es donde se implementan todas las reglas de negocio.
 
 ## Estructura de Carpetas
 
-- Es un proyecto Maven clásico (versión 3.9.11).
+- Es un proyecto Maven estándar.
 - `src/main/java` para los fuentes.
 - `unrn.model` contiene las clases del modelo de dominio.
 - `src/test/java` para los tests unitarios e integración.
@@ -105,7 +105,7 @@ assertEquals(User.ERROR_USERNAME_DUPLICADO, ex.getMessage());
 
 # Frontend
 
-El frontend se implementará con **React 19.1.1** y **Vite 7.1.2**.
+El frontend se implementará con **React 19.1.1** y **Vite 7.2.4**.
 
 ### Configuración
 
@@ -113,7 +113,7 @@ El archivo `package.json` define el proyecto React:
 
 - **react**: ^19.1.1
 - **react-dom**: ^19.1.1
-- **vite**: ^7.1.2
+- **vite**: ^7.2.4
 - **@vitejs/plugin-react**: ^5.0.0
 - Incluye ESLint 9.33.0 para control de calidad de código.
 

@@ -12,21 +12,16 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
+        CorsConfiguration config = new CorsConfiguration();        
+     
+        config.addAllowedOriginPattern("*");        
+      
+        config.addAllowedMethod("*");        
         
-        // Permitir todas las origenes (en desarrollo)
-        config.addAllowedOriginPattern("*");
-        
-        // Permitir todos los métodos HTTP
-        config.addAllowedMethod("*");
-        
-        // Permitir todos los headers
-        config.addAllowedHeader("*");
-        
-        // Permitir credenciales
+        config.addAllowedHeader("*");        
+      
         config.setAllowCredentials(true);
         
-        // Aplicar esta configuración a todas las rutas
         source.registerCorsConfiguration("/**", config);
         
         return new CorsFilter(source);

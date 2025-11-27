@@ -24,10 +24,10 @@ class GlobalExceptionHandlerTest {
     @Test
     @DisplayName("GlobalExceptionHandler maneja RuntimeException y retorna 400")
     void handleRuntimeException_retorna400() throws Exception {
-        // Setup: preparar el escenario - crear usuario con nombre inválido
+        
         String nombreInvalido = "abc"; // Menor a 5 caracteres
 
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(post("/usuarios")
                         .param("userName", nombreInvalido)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -38,12 +38,11 @@ class GlobalExceptionHandlerTest {
     @Test
     @DisplayName("GlobalExceptionHandler maneja NullPointerException como RuntimeException y retorna 400")
     void handleNullPointerException_retorna400() throws Exception {
-        // Setup: preparar el escenario - crear tweet con usuario null causará NullPointerException
+        // Crea un tweet con usuario null causará NullPointerException
         // NullPointerException extiende de RuntimeException, así que será manejado por handleRuntime
         int usuarioIdInexistente = 999;
         String texto = "Texto del tweet";
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         // El controlador no valida null, causará NullPointerException que será manejado como RuntimeException (400)
         mockMvc.perform(post("/tweets/crear")
                         .param("userId", String.valueOf(usuarioIdInexistente))
@@ -56,14 +55,12 @@ class GlobalExceptionHandlerTest {
     @Test
     @DisplayName("GlobalExceptionHandler.handleRuntime maneja RuntimeException correctamente")
     void handleRuntime_manejaRuntimeException() {
-        // Setup: preparar el escenario
+        
         GlobalExceptionHandler handler = new GlobalExceptionHandler();
         RuntimeException ex = new RuntimeException("Error de runtime");
 
-        // Ejercitación: ejecutar la acción
         var response = handler.handleRuntime(ex);
-
-        // Verificación: comprobar resultado esperado
+       
         assertNotNull(response, "La respuesta no debe ser nula");
         assertEquals(400, response.getStatusCodeValue(), "El código de estado debe ser 400");
         assertEquals("Error de runtime", response.getBody(), "El mensaje debe coincidir");
@@ -72,14 +69,12 @@ class GlobalExceptionHandlerTest {
     @Test
     @DisplayName("GlobalExceptionHandler.handleGeneral maneja Exception general correctamente")
     void handleGeneral_manejaExceptionGeneral() {
-        // Setup: preparar el escenario
+        
         GlobalExceptionHandler handler = new GlobalExceptionHandler();
         Exception ex = new Exception("Error general");
-
-        // Ejercitación: ejecutar la acción
+       
         var response = handler.handleGeneral(ex);
-
-        // Verificación: comprobar resultado esperado
+       
         assertNotNull(response, "La respuesta no debe ser nula");
         assertEquals(500, response.getStatusCodeValue(), "El código de estado debe ser 500");
         assertTrue(response.getBody().toString().contains("Error interno del servidor"), 

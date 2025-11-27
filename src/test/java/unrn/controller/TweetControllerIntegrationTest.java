@@ -55,7 +55,7 @@ class TweetControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Limpiar tablas antes de cada test
+        // Limpia las tablas antes de cada test
         tweetRepository.deleteAll();
         userRepository.deleteAll();
         entityManager.flush();
@@ -65,11 +65,9 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("POST /tweets/crear con usuario y texto válidos retorna 200 y tweet creado")
     void crearTweet_usuarioYTextoValidos_retorna200YTweet() throws Exception {
-        // Setup: preparar el escenario
         User usuario = userService.crearUsuario("usuarioParaTweet");
         String texto = "Este es mi primer tweet";
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         mockMvc.perform(post("/tweets/crear")
                         .param("userId", String.valueOf(usuario.getId()))
                         .param("texto", texto)
@@ -84,11 +82,10 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("POST /tweets/crear con usuario inexistente retorna error")
     void crearTweet_usuarioInexistente_retornaError() throws Exception {
-        // Setup: preparar el escenario
+        
         int usuarioIdInexistente = 999;
         String texto = "Texto del tweet";
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         // El GlobalExceptionHandler convierte RuntimeException en 400
         mockMvc.perform(post("/tweets/crear")
                         .param("userId", String.valueOf(usuarioIdInexistente))
@@ -100,7 +97,6 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("POST /tweets/retweet con usuario y tweet válidos retorna 200 y retweet creado")
     void hacerRetweet_usuarioYTweetValidos_retorna200YRetweet() throws Exception {
-        // Setup: preparar el escenario
         User autorOriginal = userService.crearUsuario("autorOriginal");
         User usuarioRetweeter = userService.crearUsuario("usuarioRetweeter");
         Tweet tweetOriginal = tweetService.crearTweet(autorOriginal, "Tweet original");
@@ -109,7 +105,6 @@ class TweetControllerIntegrationTest {
         request.setUserId(usuarioRetweeter.getId());
         request.setTweetId(tweetOriginal.getId());
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         mockMvc.perform(post("/tweets/retweet")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -123,7 +118,6 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("POST /tweets/retweet con usuario inexistente retorna 400")
     void hacerRetweet_usuarioInexistente_retorna400() throws Exception {
-        // Setup: preparar el escenario
         User autorOriginal = userService.crearUsuario("autorOriginal");
         Tweet tweetOriginal = tweetService.crearTweet(autorOriginal, "Tweet original");
 
@@ -131,7 +125,6 @@ class TweetControllerIntegrationTest {
         request.setUserId(999); // Usuario inexistente
         request.setTweetId(tweetOriginal.getId());
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         mockMvc.perform(post("/tweets/retweet")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -142,14 +135,13 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("POST /tweets/retweet con tweet inexistente retorna 400")
     void hacerRetweet_tweetInexistente_retorna400() throws Exception {
-        // Setup: preparar el escenario
+        
         User usuario = userService.crearUsuario("usuarioRetweeter");
 
         CreateRetweetRequest request = new CreateRetweetRequest();
         request.setUserId(usuario.getId());
         request.setTweetId(999); // Tweet inexistente
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         mockMvc.perform(post("/tweets/retweet")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -160,7 +152,7 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("POST /tweets/retweet de propio tweet retorna error")
     void hacerRetweet_propioTweet_retornaError() throws Exception {
-        // Setup: preparar el escenario
+       
         User usuario = userService.crearUsuario("usuarioPropio");
         Tweet tweetOriginal = tweetService.crearTweet(usuario, "Mi propio tweet");
 
@@ -168,7 +160,6 @@ class TweetControllerIntegrationTest {
         request.setUserId(usuario.getId());
         request.setTweetId(tweetOriginal.getId());
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         // El servicio lanza RuntimeException que el GlobalExceptionHandler convierte en 400
         mockMvc.perform(post("/tweets/retweet")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +171,7 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/timeline retorna lista de tweets originales")
     void obtenerTimeline_retornaListaTweetsOriginales() throws Exception {
-        // Setup: preparar el escenario
+       
         User usuario1 = userService.crearUsuario("usuarioUno");
         User usuario2 = userService.crearUsuario("usuarioDos");
         tweetService.crearTweet(usuario1, "Tweet original 1");
@@ -188,7 +179,6 @@ class TweetControllerIntegrationTest {
         Tweet tweetOriginal = tweetService.crearTweet(usuario1, "Tweet original 3");
         tweetService.hacerRetweet(usuario2, tweetOriginal); // Retweet que no debe aparecer
 
-        // Ejercitación y Verificación: comprobar resultado esperado
         mockMvc.perform(get("/tweets/timeline")
                         .param("offset", "0")
                         .param("limit", "10"))
@@ -203,13 +193,12 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/timeline con paginación retorna cantidad correcta")
     void obtenerTimeline_conPaginacion_retornaCantidadCorrecta() throws Exception {
-        // Setup: preparar el escenario
+        
         User usuario = userService.crearUsuario("usuarioConMuchosTweets");
         for (int i = 1; i <= 15; i++) {
             tweetService.crearTweet(usuario, "Tweet " + i);
         }
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/tweets/timeline")
                         .param("offset", "0")
                         .param("limit", "10"))
@@ -222,7 +211,7 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/timeline sin tweets retorna lista vacía")
     void obtenerTimeline_sinTweets_retornaListaVacia() throws Exception {
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/tweets/timeline")
                         .param("offset", "0")
                         .param("limit", "10"))
@@ -235,13 +224,12 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/de-usuario/{userId} retorna lista de tweets del usuario")
     void obtenerTweetsDeUsuario_retornaListaTweets() throws Exception {
-        // Setup: preparar el escenario
+       
         User usuario = userService.crearUsuario("usuarioConTweets");
         tweetService.crearTweet(usuario, "Primer tweet");
         tweetService.crearTweet(usuario, "Segundo tweet");
         tweetService.crearTweet(usuario, "Tercer tweet");
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/tweets/de-usuario/{userId}", usuario.getId())
                         .param("offset", "0")
                         .param("limit", "15"))
@@ -255,10 +243,9 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/de-usuario/{userId} sin tweets retorna lista vacía")
     void obtenerTweetsDeUsuario_sinTweets_retornaListaVacia() throws Exception {
-        // Setup: preparar el escenario
+        
         User usuario = userService.crearUsuario("usuarioSinTweets");
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/tweets/de-usuario/{userId}", usuario.getId())
                         .param("offset", "0")
                         .param("limit", "15"))
@@ -271,13 +258,12 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/retweets retorna lista de retweets")
     void listarRetweets_retornaListaRetweets() throws Exception {
-        // Setup: preparar el escenario
+        
         User autorOriginal = userService.crearUsuario("autorOriginal");
         User usuarioRetweeter = userService.crearUsuario("usuarioRetweeter");
         Tweet tweetOriginal = tweetService.crearTweet(autorOriginal, "Tweet original");
         tweetService.hacerRetweet(usuarioRetweeter, tweetOriginal);
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+        
         mockMvc.perform(get("/tweets/retweets")
                         .param("offset", "0")
                         .param("limit", "10"))
@@ -293,11 +279,10 @@ class TweetControllerIntegrationTest {
     @Test
     @DisplayName("GET /tweets/retweets sin retweets retorna lista vacía")
     void listarRetweets_sinRetweets_retornaListaVacia() throws Exception {
-        // Setup: preparar el escenario
+       
         User usuario = userService.crearUsuario("usuarioSinRetweets");
         tweetService.crearTweet(usuario, "Tweet original");
-
-        // Ejercitación y Verificación: comprobar resultado esperado
+       
         mockMvc.perform(get("/tweets/retweets")
                         .param("offset", "0")
                         .param("limit", "10"))
