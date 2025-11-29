@@ -8,6 +8,7 @@ import { MESSAGES } from '@/constants/messages';
 const TweetCard = ({ tweet, onRetweetSuccess, currentUserId }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
 
     const handleRetweet = async () => {
         if (!currentUserId) {
@@ -22,12 +23,18 @@ const TweetCard = ({ tweet, onRetweetSuccess, currentUserId }) => {
 
         setLoading(true);
         setError(null);
+        setSuccess(null);
 
         try {
             await tweetService.hacerRetweet(currentUserId, tweet.id);
+            setSuccess(MESSAGES.SUCCESS.RETWEET_EXITOSO);
             if (onRetweetSuccess) {
                 onRetweetSuccess();
             }
+            // Limpiar el mensaje de éxito después de 3 segundos
+            setTimeout(() => {
+                setSuccess(null);
+            }, 3000);
         } catch (err) {
             const backendData = err.response?.data;
             const backendMessage = typeof backendData === 'string'
@@ -139,26 +146,33 @@ const TweetCard = ({ tweet, onRetweetSuccess, currentUserId }) => {
 
                     {/* Acciones */}
                     {currentUserId && (
-                        <div className="flex justify-end gap-2 mt-2">
+                        <div className="flex flex-col gap-2 mt-2">
                             {error && (
-                                <div className="alert alert-error alert-sm flex-1">
+                                <div className="alert alert-error alert-sm">
                                     <span className="text-xs">{error}</span>
                                 </div>
                             )}
-                            <button
-                                onClick={handleRetweet}
-                                className="btn btn-outline btn-primary btn-sm"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <span className="loading loading-spinner loading-sm"></span>
-                                ) : (
-                                    <>
-                                        <FontAwesomeIcon icon={faRetweet} />
-                                        Retweet
-                                    </>
-                                )}
-                            </button>
+                            {success && (
+                                <div className="alert alert-success alert-sm">
+                                    <span className="text-xs">{success}</span>
+                                </div>
+                            )}
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={handleRetweet}
+                                    className="btn btn-outline btn-primary btn-sm"
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <span className="loading loading-spinner loading-sm"></span>
+                                    ) : (
+                                        <>
+                                            <FontAwesomeIcon icon={faRetweet} />
+                                            Retweet
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>

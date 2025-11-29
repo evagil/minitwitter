@@ -23,6 +23,7 @@ export const MESSAGES = {
     SUCCESS: {
         TWEET_CREADO: '¡Tweet creado exitosamente!',
         USUARIO_CREADO: 'Usuario creado exitosamente',
+        RETWEET_EXITOSO: '¡Retweet realizado exitosamente!',
     },
     LOADING: {
         CARGANDO: 'Cargando...',

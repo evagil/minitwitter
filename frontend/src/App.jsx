@@ -36,10 +36,6 @@ function AppContent() {
                                 />
                                 <ListaUsuarios 
                                     key={usuariosVersion}
-                                    onUserSelect={(userId) => {
-                                        setCurrentUserId(userId);
-                                    }}
-                                    selectedUserId={currentUserId}
                                 />
                             </div>
                         } 

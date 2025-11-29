@@ -4,7 +4,7 @@ import { userService } from '@/services/userService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const ListaUsuarios = ({ onUserSelect, selectedUserId }) => {
+const ListaUsuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -81,9 +81,7 @@ const ListaUsuarios = ({ onUserSelect, selectedUserId }) => {
                         usuarios.map((usuario) => (
                             <div
                                 key={usuario.id}
-                                className={`card bg-base-100 shadow-xl rounded-3xl border border-base-300 transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl ${
-                                    selectedUserId === usuario.id ? 'ring-2 ring-primary ring-offset-2' : ''
-                                }`}
+                                className="card bg-base-100 shadow-xl rounded-3xl border border-base-300 transition-transform duration-300 hover:-translate-y-1 hover:shadow-2xl"
                             >
                                 <div className="card-body p-5 space-y-4">
                                     <div className="flex items-center gap-3">
@@ -102,19 +100,9 @@ const ListaUsuarios = ({ onUserSelect, selectedUserId }) => {
                                         </div>
                                     </div>
                                     <div className="flex gap-2 pt-2">
-                                        <button
-                                            onClick={() => onUserSelect && onUserSelect(usuario.id)}
-                                            className={`btn btn-sm flex-1 font-semibold ${
-                                                selectedUserId === usuario.id
-                                                    ? 'btn-primary'
-                                                    : 'btn-outline btn-primary'
-                                            }`}
-                                        >
-                                            {selectedUserId === usuario.id ? 'Seleccionado' : 'Seleccionar'}
-                                        </button>
                                         <Link
                                             to={`/usuario/${usuario.id}`}
-                                            className="btn btn-secondary btn-sm"
+                                            className="btn btn-outline btn-primary btn-sm flex-1"
                                         >
                                             Ver Perfil
                                         </Link>
